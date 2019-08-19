@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="https://themeswitcher.csh.rit.edu/api/get" rel="stylesheet">
+        <meta content="initial-scale=1, width=device-width" name="viewport">
+        <script crossorigin="anonymous" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+        <script defer src="/static/script.js"></script>
+        <title>CSH Bucket</title>
+    </head>
+    <body>
+        <nav class="bg-primary navbar navbar-dark navbar-expand-lg sticky-top">
+            <div class="container">
+                <a class="navbar-brand" href="/">Bucket</a>
+            </div>
+        </nav>
+        <div class="container">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="alert alert-info mt-3">{{messages[0]}}</div>
+            {% endif %}
+            {% endwith %}
+            <div class="row">
+                <div class="col-12 col-lg-6 col-md-10 col-sm-10 mx-auto my-3">
+                    <form action="/change" class="card" method="POST">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-3 col-sm-12">Access Key:</label>
+                                <div class="col-md-9 col-sm-12">
+                                    <input class="form-control" name="access_key" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-3 col-sm-12">Secret Key:</label>
+                                <div class="col-md-9 col-sm-12">
+                                    <input class="form-control" name="secret_key" required type="password">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-3 col-sm-12">Bucket</label>
+                                <div class="col-md-9 col-sm-12">
+                                    <input class="form-control" name="bucket" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-form-label col-sm-3">Policy:</label>
+                                <div class="col-sm-1">
+                                    <label>None</label>
+                                    <input checked name="policy" type="radio" value="None"> 
+                                </div>
+                                <div class="col-sm-1">
+                                    <label>Public</label>
+                                    <input name="policy" type="radio" value="Public"> 
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-3 mx-auto">
+                                    <input class="form-control" type="submit" value="Change">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
