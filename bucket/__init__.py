@@ -37,6 +37,14 @@ def change():
         aws_secret_access_key = request.form['secret_key'],
         endpoint_url = environ['S3_ENDPOINT']
     )
+    try:
+        s3.head_bucket(Bucket = request.form['bucket'])
+    except:
+        try:
+            s3.create_bucket(Bucket = request.form['bucket'])
+        except ClientError as error:
+            flash(error.resposne['Error']['Code'])
+            return redirect('/')
     policy = request.form.get('policy', 'None')
     if policy == 'None':
         try:
