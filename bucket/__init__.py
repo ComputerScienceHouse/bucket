@@ -1,6 +1,8 @@
 from json import dumps
 from flask import flash, Flask, redirect, render_template, request
 from os import environ
+from flask_pyoidc.provider_configuration import *
+from flask_pyoidc.flask_pyoidc import OIDCAuthentication
 from boto3 import client
 from botocore.exceptions import ClientError
 
@@ -16,12 +18,24 @@ _policy = dumps({
 })
 
 app = Flask(__name__)
+app.config.update(
+    PREFERRED_URL_SCHEME = environ.get('URL_SCHEME', 'https'),
+    SECRET_KEY = environ['SECRET_KEY'], SERVER_NAME = environ['SERVER_NAME']
+)
 app.config['SECRET_KEY'] = environ['SECRET_KEY']
 app.jinja_env.lstrip_blocks = True
 app.jinja_env.trim_blocks = True
 app.url_map.strict_slashes = False
 
+_config = ProviderConfiguration(
+    environ['OIDC_ISSUER'], client_metadata = ClientMetadata(
+        environ['OIDC_CLIENT_ID'], environ['OIDC_CLIENT_SECRET']
+    )
+)
+_auth = OIDCAuthentication({'default': _config}, app)
+
 @app.route('/change', methods = ['POST'])
+@_auth.oidc_auth('default')
 def change():
     if 'access_key' not in request.form:
         flash('No access key provided.')
@@ -64,5 +78,6 @@ def change():
     return redirect('/')
 
 @app.route('/')
+@_auth.oidc_auth('default')
 def index():
     return render_template('index.html')
